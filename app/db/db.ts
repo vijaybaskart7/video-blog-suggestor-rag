@@ -1,7 +1,14 @@
-// Make sure to install the '@neondatabase/serverless' package
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 
-import { drizzle } from "drizzle-orm/neon-http";
 import { serverEnv } from "../data/serverEnv";
-import { userRelations } from "./relation";
+import * as schema from "./schema";
 
-export const db = drizzle(serverEnv.DATABASE_URL, { relations: userRelations });
+const pool = new Pool({
+  connectionString: serverEnv.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+export const db = drizzle(pool, { schema });
